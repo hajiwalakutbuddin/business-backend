@@ -7,8 +7,24 @@ const { getProducts, addProduct, updateProduct, deleteProduct } = require("../co
 router.get("/", getProducts);
 
 // Protected
-router.post("/", auth, addProduct);
-router.put("/:id", auth, updateProduct);
+// ================== CHANGED: enable file upload ==================
+const { upload } = require("../controllers/productController");
+
+router.post(
+    "/",
+    authMiddleware,
+    upload.single("imageFile"), // <-- file field name from frontend
+    createProduct
+);
+
+router.put(
+    "/:id",
+    authMiddleware,
+    upload.single("imageFile"),
+    updateProduct
+);
+// ================================================================
+
 router.delete("/:id", auth, deleteProduct);
 
 module.exports = router;
