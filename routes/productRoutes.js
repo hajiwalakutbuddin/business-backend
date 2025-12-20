@@ -1,30 +1,43 @@
 const express = require("express");
 const router = express.Router();
-const auth = require("../middleware/authMiddleware");
-const { getProducts, addProduct, updateProduct, deleteProduct } = require("../controllers/productController");
 
-// Public
+// ================== IMPORTS ==================
+
+// Auth middleware
+const auth = require("../middleware/authMiddleware");
+
+// Product controller functions
+const {
+  getProducts,
+  addProduct,
+  updateProduct,
+  deleteProduct,
+  upload, // multer middleware exported from controller
+} = require("../controllers/productController");
+
+// ================== ROUTES ==================
+
+// Public route — get all products
 router.get("/", getProducts);
 
-// Protected
-// ================== CHANGED: enable file upload ==================
-const { upload } = require("../controllers/productController");
-
+// Protected route — add product (supports image upload)
 router.post(
-    "/",
-    authMiddleware,
-    upload.single("imageFile"), // <-- file field name from frontend
-    createProduct
+  "/",
+  auth,                         // check JWT
+  upload.single("imageFile"),   // handle image upload (optional)
+  addProduct                   // controller
 );
 
+// Protected route — update product (supports image upload)
 router.put(
-    "/:id",
-    authMiddleware,
-    upload.single("imageFile"),
-    updateProduct
+  "/:id",
+  auth,
+  upload.single("imageFile"),
+  updateProduct
 );
-// ================================================================
 
+// Protected route — delete product
 router.delete("/:id", auth, deleteProduct);
 
+// ================== EXPORT ==================
 module.exports = router;
