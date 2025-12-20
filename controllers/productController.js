@@ -1,5 +1,6 @@
 const Product = require("../models/Product");
 // ================== ADDED: Image upload setup ==================
+const authMiddleware = require("../middleware/authMiddleware");
 
 const cloudinary = require("cloudinary").v2;
 const multer = require("multer");
